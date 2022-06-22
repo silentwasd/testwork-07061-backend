@@ -20,13 +20,12 @@ class BoardController extends Controller
             'content' => 'nullable|string'
         ]);
 
-        $items = BoardItem::search($validated['content'] ?? '')
-            ->orderBy('published_at', 'desc');
+        $items = BoardItem::search($validated['content'] ?? '');
 
         if (isset($validated['type']))
             $items->where('item_type', $validated['type']);
 
-        $items = $items->paginate(20);
+        $items = $items->orderBy('published_at', 'desc')->paginate(20);
 
         $items->setCollection(
             collect($items->items())

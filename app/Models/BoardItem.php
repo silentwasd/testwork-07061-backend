@@ -21,6 +21,7 @@ class BoardItem extends Model
         return [
             'title' => $this->title,
             'content' => $this->content,
+            'item_type' => $this->item_type,
             'published_at' => $this->published_at,
         ];
     }
