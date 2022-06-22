@@ -16,7 +16,7 @@ return new class extends Migration {
                 ->nullOnDelete();
 
             $table->string('title');
-            $table->text('content');
+            $table->text('content')->fulltext();
             $table->string('item_type');
 
             $table->string('price_type')->default('simple');

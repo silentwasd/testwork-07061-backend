@@ -16,12 +16,12 @@ class BoardController extends Controller
             'type' => [
                 'nullable',
                 Rule::in(config('board.item_types'))
-            ]
+            ],
+            'content' => 'nullable|string'
         ]);
 
-        $items = BoardItem::whereNotNull('published_at')
-            ->whereNull('removed_at')
-            ->orderByDesc('published_at');
+        $items = BoardItem::search($validated['content'] ?? '')
+            ->orderBy('published_at', 'desc');
 
         if (isset($validated['type']))
             $items->where('item_type', $validated['type']);
