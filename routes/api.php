@@ -31,3 +31,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/board/items', [BoardController::class, 'items']);
+Route::get('/board/item/{item}', [BoardController::class, 'item'])->middleware('auth-sanctum-hook');

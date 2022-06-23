@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\BoardItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class BoardController extends Controller
@@ -44,6 +45,31 @@ class BoardController extends Controller
         return response()->json([
             'success' => true,
             'data' => $items
+        ]);
+    }
+
+    public function item(BoardItem $item)
+    {
+        $user = Auth::user();
+
+        if (!$item->published_at && (!$user || $item->user_id != $user->id))
+            abort(403);
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id' => $item->id,
+                'title' => $item->title,
+                'item_type' => $item->item_type,
+                'content' => $item->content,
+                'published_at ' => $item->published_at,
+                'price' => [
+                    'value' => $item->price_value,
+                    'type' => $item->price_type,
+                    'range' => $item->price_range
+                ],
+                'own' => $user && $item->user_id == $user->id
+            ]
         ]);
     }
 
