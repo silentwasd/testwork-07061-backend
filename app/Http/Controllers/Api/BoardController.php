@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\BoardClick;
 use App\Models\BoardItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -55,6 +56,14 @@ class BoardController extends Controller
         if (!$item->published_at && (!$user || $item->user_id != $user->id))
             abort(403);
 
+        $hasClick = false;
+
+        if ($user) {
+            $hasClick = BoardClick::where('board_item_id', $item->id)
+                    ->where('user_id', $user->id)
+                    ->count() > 0;
+        }
+
         return response()->json([
             'success' => true,
             'data' => [
@@ -68,9 +77,38 @@ class BoardController extends Controller
                     'type' => $item->price_type,
                     'range' => $item->price_range
                 ],
-                'own' => $user && $item->user_id == $user->id
+                'own' => $user && $item->user_id == $user->id,
+                'hasClick' => $hasClick
             ]
         ]);
+    }
+
+    public function click(Request $request, BoardItem $item)
+    {
+        $user = Auth::user();
+
+        if (!$item->published_at || ($user && $item->user_id == $user->id))
+            abort(403);
+
+        $validated = $request->validate([
+            'user_email' => [
+                $user ? 'nullable' : 'required',
+                'email'
+            ],
+            'user_name' => [
+                $user ? 'nullable' : 'required',
+                'string'
+            ]
+        ]);
+
+        $click = new BoardClick([
+            'board_item_id' => $item->id,
+            'user_id' => $user?->id,
+            'user_email' => !$user ? $validated['user_email'] : null,
+            'user_name' => !$user ? $validated['user_name'] : null
+        ]);
+
+        return response()->json(['success' => $click->save()]);
     }
 
     public function create(Request $request)
