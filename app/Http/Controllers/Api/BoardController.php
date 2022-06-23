@@ -46,4 +46,40 @@ class BoardController extends Controller
             'data' => $items
         ]);
     }
+
+    public function create(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|unique:board_items,title|min:3',
+            'content' => 'required|string|min:5',
+            'price_value' => 'required|integer|min:0',
+            'price_type' => [
+                'required',
+                'string',
+                Rule::in(config('board.price_types'))
+            ],
+            'price_range' => [
+                'required',
+                'string',
+                Rule::in(config('board.price_ranges'))
+            ],
+            'item_type' => [
+                'required',
+                'string',
+                Rule::in(config('board.item_types'))
+            ]
+        ]);
+
+        $item = new BoardItem(array_merge($validated, ['user_id' => $request->user()->id]));
+        $stored = $item->save();
+
+        return response()->json($stored ? [
+            'success' => true,
+            'data' => [
+                'id' => $item->id
+            ]
+        ] : [
+            'success' => false
+        ]);
+    }
 }

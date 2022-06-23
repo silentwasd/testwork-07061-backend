@@ -8,5 +8,17 @@ return [
         'service',
         'want-rent',
         'rent'
+    ],
+
+    'price_types' => [
+        'simple',
+        'weight',
+        'monthly'
+    ],
+
+    'price_ranges' => [
+        'from',
+        'to',
+        'exact'
     ]
 ];

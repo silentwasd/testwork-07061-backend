@@ -15,6 +15,10 @@ class BoardItem extends Model
         'published_at' => 'datetime'
     ];
 
+    protected $fillable = [
+        'user_id', 'title', 'content', 'price_type', 'price_value', 'price_range', 'item_type'
+    ];
+
     #[SearchUsingFullText(['content'])]
     public function toSearchableArray()
     {

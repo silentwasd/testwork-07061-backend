@@ -22,6 +22,10 @@ Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth:san
 
 Route::post('/register', [RegistrationController::class, 'register']);
 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/board/create', [BoardController::class, 'create']);
+});
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
