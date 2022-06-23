@@ -62,7 +62,7 @@ class BoardController extends Controller
                 'title' => $item->title,
                 'item_type' => $item->item_type,
                 'content' => $item->content,
-                'published_at ' => $item->published_at,
+                'published_at' => $item->published_at,
                 'price' => [
                     'value' => $item->price_value,
                     'type' => $item->price_type,
