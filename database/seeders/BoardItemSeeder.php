@@ -11,6 +11,8 @@ class BoardItemSeeder extends Seeder
 {
     public function run()
     {
-        BoardItem::factory()->count(10000)->create();
+        BoardItem::withoutSyncingToSearch(function () {
+            BoardItem::factory()->count(10000)->create();
+        });
     }
 }
