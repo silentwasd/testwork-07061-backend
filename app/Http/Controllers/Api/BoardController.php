@@ -83,7 +83,20 @@ class BoardController extends Controller
                     'id' => $item->user->id,
                     'name' => $item->user->name,
                     'email' => $hasClick ? $item->user->email : null
-                ]
+                ],
+                'clicks' => $user && $item->user_id == $user->id ?
+                    $item->clicks->map(function (BoardClick $click) {
+                        return [
+                            'id' => $click->id,
+                            'user' => $click->user_id ? [
+                                'name' => $click->user->name,
+                                'email' => $click->user->email
+                            ] : [
+                                'name' => $click->user_name,
+                                'email' => $click->user_email
+                            ],
+                        ];
+                    }) : []
             ]
         ]);
     }
