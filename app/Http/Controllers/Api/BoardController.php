@@ -158,4 +158,41 @@ class BoardController extends Controller
             'success' => false
         ]);
     }
+
+    public function update(Request $request, BoardItem $item)
+    {
+        $validated = $request->validate([
+            'title' => [
+                'required',
+                'string',
+                'min:3',
+                $request->input('title') == $item->title ? '' : 'unique:board_items,title'
+            ],
+            'content' => 'required|string|min:5',
+            'price_value' => 'required|integer|min:0',
+            'price_type' => [
+                'required',
+                'string',
+                Rule::in(config('board.price_types'))
+            ],
+            'price_range' => [
+                'required',
+                'string',
+                Rule::in(config('board.price_ranges'))
+            ],
+            'item_type' => [
+                'required',
+                'string',
+                Rule::in(config('board.item_types'))
+            ]
+        ]);
+
+        return response()->json(['success' => $item->update($validated)]);
+    }
+
+    public function remove(BoardItem $item)
+    {
+        $item->removed_at = now();
+        return response()->json(['success' => $item->save()]);
+    }
 }

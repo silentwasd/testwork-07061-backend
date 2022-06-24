@@ -23,7 +23,14 @@ Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth:san
 Route::post('/register', [RegistrationController::class, 'register']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/board/create', [BoardController::class, 'create']);
+    Route::post('/board/create', [BoardController::class, 'create'])
+        ->middleware('ability:board-item:create');
+
+    Route::post('/board/item/{item}/update', [BoardController::class, 'update'])
+        ->middleware('ability:board-item:update-owns');
+
+    Route::post('/board/item/{item}/remove', [BoardController::class, 'remove'])
+        ->middleware('ability:board-item:remove-owns');
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

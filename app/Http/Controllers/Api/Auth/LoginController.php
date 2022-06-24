@@ -25,8 +25,7 @@ class LoginController extends Controller
             $token = $user->createToken('user', [
                 'board-item:create',
                 'board-item:update-owns',
-                'board-item:remove-owns',
-                'board-item:close-owns'
+                'board-item:remove-owns'
             ]);
 
             return response()->json([
