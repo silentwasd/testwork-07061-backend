@@ -78,7 +78,12 @@ class BoardController extends Controller
                     'range' => $item->price_range
                 ],
                 'own' => $user && $item->user_id == $user->id,
-                'hasClick' => $hasClick
+                'hasClick' => $hasClick,
+                'owner' => [
+                    'id' => $item->user->id,
+                    'name' => $item->user->name,
+                    'email' => $hasClick ? $item->user->email : null
+                ]
             ]
         ]);
     }
@@ -108,7 +113,14 @@ class BoardController extends Controller
             'user_name' => !$user ? $validated['user_name'] : null
         ]);
 
-        return response()->json(['success' => $click->save()]);
+        $stored = $click->save();
+
+        return response()->json($stored ? [
+            'success' => true,
+            'data' => [
+                'owner_email' => $item->user->email
+            ]
+        ] : [ 'success' => false ]);
     }
 
     public function create(Request $request)
